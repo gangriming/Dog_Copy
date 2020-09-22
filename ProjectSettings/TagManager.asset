@@ -6,6 +6,9 @@ TagManager:
   tags:
   - SummonMonster
   - EnemyMonster
+  - GroundCol
+  - SummonMissile
+  - EnemyMissile
   layers:
   - Default
   - TransparentFX

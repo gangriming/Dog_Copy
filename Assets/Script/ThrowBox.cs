@@ -37,16 +37,21 @@ public class ThrowBox : MonoBehaviour
 
     public void PigThrowBox()
     {
-        throwPos = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+        throwPos = new Vector3(transform.position.x, transform.position.y + 0.7f, transform.position.z);
 
         DesPos = throwPos;
         DesPos.x += 2f;
-        DesPos.y += Random.Range(1f, 5f);
+        DesPos.y += Random.Range(1.3f, 3.5f);
 
         createBox = Instantiate(boxObject, throwPos, Quaternion.identity);
-        createBox.transform.right = new Vector3(DesPos.x - throwPos.x, DesPos.y - throwPos.y, 0f);
+     //   createBox.transform.right = new Vector3(DesPos.x - throwPos.x, DesPos.y - throwPos.y, 0f);
 
         // 낼 자연스럽게 손보기,.
-        createBox.GetComponent<Rigidbody2D>().velocity = createBox.transform.right * 8f;
+        if(GetComponent<MonsterMove>().IsPlayerSummon)
+            createBox.GetComponent<Rigidbody2D>().velocity = createBox.transform.right * 8f;
+        else
+            createBox.GetComponent<Rigidbody2D>().velocity = -createBox.transform.right * 8f;
+
+        createBox.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 2f), ForceMode2D.Impulse);
     }
 }

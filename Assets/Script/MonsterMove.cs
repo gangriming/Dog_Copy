@@ -8,6 +8,8 @@ public class MonsterMove : MonoBehaviour
 {
     [Range(1.0f, 2.0f)]
     public float speed = 1.0f;
+    public int monsterMaxHP = 50;
+    public Transform hpFillImageTrans;
 
     // -읽을 수 있는 변수들-
     public bool IsPlayerSummon
@@ -19,7 +21,10 @@ public class MonsterMove : MonoBehaviour
             if (isPlayerSummon)
                 spriteRenderer.flipX = true;
             else
+            {
                 spriteRenderer.flipX = false;
+                spriteRenderer.color = new Color(0.7735f, 0.3977f, 0.3977f);
+            }
         }
     }
     public bool isPlayerSummon = true;      // 플레이어가 소환했는지.
@@ -31,8 +36,11 @@ public class MonsterMove : MonoBehaviour
     MonsterState monsterState = MonsterState.IDLE;
     public summonMonsterName monsterName;
 
+    int monsterCurHp = 50;
+
     // -애니메이터 변수-
     Animator animator;
+    float attTime = 0.2f;
 
     private void Awake()
     {
@@ -46,12 +54,15 @@ public class MonsterMove : MonoBehaviour
             spriteRenderer.flipX = false;
 
         monsterState = MonsterState.RUN;
-
-
+        monsterCurHp = monsterMaxHP;
 
         // debug용
         if (monsterName == summonMonsterName.BOX_PIG)
-            StartCoroutine("DebugBoxPig");
+        {
+            //StartCoroutine("DebugBoxPig");
+            animator.SetBool("isAtt", true);
+            monsterState = MonsterState.ATT;
+        }
 
     }
     // Update is called once per frame
@@ -67,21 +78,34 @@ public class MonsterMove : MonoBehaviour
 
     private void FixedUpdate()
     {
+        attTime -= Time.deltaTime;
+
         // 이동말고도 Att, Dead, 다른 몬스터에 의해 멈출때 분기.
-        // 지금은 임시로
-        if (monsterState == MonsterState.RUN)
+        switch (monsterState)
         {
-            if (isPlayerSummon)      // 오른쪽
-            {
-                rigidbody.MovePosition(new Vector2(rigidbody.position.x + (speed * Time.deltaTime), rigidbody.position.y));
-            }
-            else                        // 왼쪽
-            {
-                rigidbody.MovePosition(new Vector2(rigidbody.position.x - (speed * Time.deltaTime), rigidbody.position.y));
-            }
+            case MonsterState.RUN:
+                {
+                    if (isPlayerSummon)      // 오른쪽
+                    {
+                        rigidbody.MovePosition(new Vector2(rigidbody.position.x + (speed * Time.deltaTime), rigidbody.position.y));
+                    }
+                    else                        // 왼쪽
+                    {
+                        rigidbody.MovePosition(new Vector2(rigidbody.position.x - (speed * Time.deltaTime), rigidbody.position.y));
+                    }
+                    break;
+                }
+            case MonsterState.ATT:
+                if (monsterName == summonMonsterName.BOX_PIG
+                    && attTime <= 0f
+                    && GetComponent<SpriteRenderer>().sprite.name == "Throwing Box (26x30)_3")      // 특정 프레임에 공격 다른 방법이 있을까?
+                {
+                    attTime = 1f;
+                    GetComponent<ThrowBox>().PigThrowBox();
+                }
+                break;
         }
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // 충돌체에 들어올 때
@@ -98,8 +122,7 @@ public class MonsterMove : MonoBehaviour
             // 그렇다면 맨 앞의 몬스터는 자기가 1번이라는것을 알고 있어야 한다. 별도 변수 필요?
 
             // 일단 멈춰놓자. ㅇㅅㅇ
-            monsterState = MonsterState.IDLE;
-
+           // monsterState = MonsterState.IDLE;
         }
     }
 
@@ -111,13 +134,23 @@ public class MonsterMove : MonoBehaviour
             monsterState = MonsterState.RUN;
         }
     }
-
-    IEnumerator DebugBoxPig()
+    
+    public void SetHp(int damage)
     {
-        while(true)
+        monsterCurHp -= damage;
+
+        Vector3 imageScale = hpFillImageTrans.localScale;
+        if (monsterCurHp <= 0)
         {
-            GetComponent<ThrowBox>().PigThrowBox();
-            yield return new WaitForSeconds(2f);
+            monsterState = MonsterState.DEAD;
+            hpFillImageTrans.localScale = new Vector3(0f, imageScale.y);
+
+            // 일단 죽여놓자
+            Destroy(gameObject);
+            return;
         }
+
+        float temp = ((float)monsterCurHp / (float)monsterMaxHP);
+        hpFillImageTrans.localScale = new Vector3(temp, imageScale.y);
     }
 }
