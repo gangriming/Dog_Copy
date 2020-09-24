@@ -57,9 +57,9 @@ public class MonsterMove : MonoBehaviour
         monsterCurHp = monsterMaxHP;
 
         // debug용
-        if (monsterName == summonMonsterName.BOX_PIG)
+        if (monsterName == summonMonsterName.BOX_PIG
+            || monsterName == summonMonsterName.BOMB_PIG)
         {
-            //StartCoroutine("DebugBoxPig");
             animator.SetBool("isAtt", true);
             monsterState = MonsterState.ATT;
         }
@@ -103,6 +103,13 @@ public class MonsterMove : MonoBehaviour
                     attTime = 1f;
                     GetComponent<ThrowBox>().PigThrowBox();
                 }
+                else if (monsterName == summonMonsterName.BOMB_PIG
+                    && attTime <= 0f
+                    && GetComponent<SpriteRenderer>().sprite.name == "Throwing Boom (26x26)_3")      // 특정 프레임에 공격 다른 방법이 있을까?
+                {
+                    attTime = 2f;
+                    GetComponent<ThrowBox>().PigThrowBox();
+                }
                 break;
         }
     }
@@ -122,7 +129,7 @@ public class MonsterMove : MonoBehaviour
             // 그렇다면 맨 앞의 몬스터는 자기가 1번이라는것을 알고 있어야 한다. 별도 변수 필요?
 
             // 일단 멈춰놓자. ㅇㅅㅇ
-           // monsterState = MonsterState.IDLE;
+            // monsterState = MonsterState.IDLE;
         }
     }
 
@@ -134,7 +141,7 @@ public class MonsterMove : MonoBehaviour
             monsterState = MonsterState.RUN;
         }
     }
-    
+
     public void SetHp(int damage)
     {
         monsterCurHp -= damage;

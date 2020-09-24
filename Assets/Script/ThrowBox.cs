@@ -26,13 +26,6 @@ public class ThrowBox : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (createBox)
-        {
-            Vector2 velocity = GetComponent<Rigidbody2D>().velocity;
-            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-            createBox.transform.eulerAngles = new Vector3(0f, 0f, angle);
-        }
-
     }
 
     public void PigThrowBox()
@@ -44,6 +37,9 @@ public class ThrowBox : MonoBehaviour
         DesPos.y += Random.Range(1.3f, 3.5f);
 
         createBox = Instantiate(boxObject, throwPos, Quaternion.identity);
+        if (!GetComponent<MonsterMove>().IsPlayerSummon)
+            createBox.tag = "EnemyMissile";
+
      //   createBox.transform.right = new Vector3(DesPos.x - throwPos.x, DesPos.y - throwPos.y, 0f);
 
         // 낼 자연스럽게 손보기,.

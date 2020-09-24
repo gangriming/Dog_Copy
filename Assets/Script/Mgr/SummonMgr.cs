@@ -11,7 +11,7 @@ public class SummonMgr : MonoBehaviour
     public GameObject[] summonMonster ; // 소환할 몬스터 목록.
 
     public int maxSummonCount = 10;
-    public float enemySummonTime = 1.5f;
+    public float enemySummonTime = 3f;
 
     // SummonMgr에서는 소환한 몬스터의 리스트를 가지고 있는다.
     List<GameObject> summonMonsterList = new List<GameObject>();        // 버튼으로 소환한 내 몬스터
@@ -68,6 +68,17 @@ public class SummonMgr : MonoBehaviour
                 {
                     var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.3f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 20;
+                    summonMonsterList.Add(temp);
+
+                    UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
+                    return true;
+                }
+                return false;
+            case summonMonsterName.BOMB_PIG:
+                if (UIMgr.instance.PlayerMoney - 30 >= 0)
+                {
+                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.3f), Quaternion.identity);
+                    UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 30;
                     summonMonsterList.Add(temp);
 
                     UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
