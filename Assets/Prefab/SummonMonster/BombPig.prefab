@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 179344050623673353}
   - component: {fileID: 6963702586314563305}
   - component: {fileID: -6232687907098744755}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BombPig
   m_TagString: SummonMonster
   m_Icon: {fileID: 0}
@@ -121,9 +121,9 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1371207094530656489}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0

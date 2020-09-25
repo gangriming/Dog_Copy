@@ -31,9 +31,11 @@ public class MonsterMove : MonoBehaviour
 
 
     // -사용 변수-
-    Rigidbody2D rigidbody;
+    Rigidbody2D myRigidbody;
     SpriteRenderer spriteRenderer;
     MonsterState monsterState = MonsterState.IDLE;
+    public MonsterState GetState() { return monsterState; }
+    SummonMgr summonMgr;
     public summonMonsterName monsterName;
 
     int monsterCurHp = 50;
@@ -44,7 +46,7 @@ public class MonsterMove : MonoBehaviour
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        myRigidbody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
@@ -53,9 +55,11 @@ public class MonsterMove : MonoBehaviour
         else
             spriteRenderer.flipX = false;
 
-        monsterState = MonsterState.RUN;
+
+        AnimationSetting(MonsterState.RUN);
         monsterCurHp = monsterMaxHP;
 
+        /*
         // debug용
         if (monsterName == summonMonsterName.BOX_PIG
             || monsterName == summonMonsterName.BOMB_PIG)
@@ -63,17 +67,24 @@ public class MonsterMove : MonoBehaviour
             animator.SetBool("isAtt", true);
             monsterState = MonsterState.ATT;
         }
-
+        */
     }
+
+    private void Start()
+    {
+        summonMgr = SummonMgr.instance;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        // Animator 변경
-        if (monsterState == MonsterState.RUN)
-            animator.SetBool("isMoving", true);
-        else
-            animator.SetBool("isMoving", false);
-
+        if(monsterState == MonsterState.ATT)
+        {
+            if (isPlayerSummon && !summonMgr.isEnemyMonsterExist())
+                AnimationSetting(MonsterState.RUN);
+            else if(!isPlayerSummon && !summonMgr.isSummonMonsterExist())
+                AnimationSetting(MonsterState.RUN);
+        }
     }
 
     private void FixedUpdate()
@@ -85,13 +96,27 @@ public class MonsterMove : MonoBehaviour
         {
             case MonsterState.RUN:
                 {
-                    if (isPlayerSummon)      // 오른쪽
+                    if (isPlayerSummon)      // 오른쪽으로 가는 Summon
                     {
-                        rigidbody.MovePosition(new Vector2(rigidbody.position.x + (speed * Time.deltaTime), rigidbody.position.y));
+                        myRigidbody.MovePosition(new Vector2(myRigidbody.position.x + (speed * Time.fixedDeltaTime), myRigidbody.position.y));
+
+                        if (summonMgr.isEnemyMonsterExist()
+                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) < 5f
+                            && monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG)       // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
+                        {
+                            AnimationSetting(MonsterState.ATT);     // 공격.
+                        }
                     }
-                    else                        // 왼쪽
+                    else                        // 왼쪽으로 오는 Enemy
                     {
-                        rigidbody.MovePosition(new Vector2(rigidbody.position.x - (speed * Time.deltaTime), rigidbody.position.y));
+                        myRigidbody.MovePosition(new Vector2(myRigidbody.position.x - (speed * Time.fixedDeltaTime), myRigidbody.position.y));
+
+                        if (summonMgr.isSummonMonsterExist()
+                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos()) < 5f 
+                            && monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG) // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
+                        {
+                            AnimationSetting(MonsterState.ATT);     // 공격.
+                        }
                     }
                     break;
                 }
@@ -105,42 +130,48 @@ public class MonsterMove : MonoBehaviour
                 }
                 else if (monsterName == summonMonsterName.BOMB_PIG
                     && attTime <= 0f
-                    && GetComponent<SpriteRenderer>().sprite.name == "Throwing Boom (26x26)_3")      // 특정 프레임에 공격 다른 방법이 있을까?
+                    && GetComponent<SpriteRenderer>().sprite.name == "Throwing Boom (26x26)_3")    
                 {
                     attTime = 2f;
                     GetComponent<ThrowBox>().PigThrowBox();
                 }
+
+
                 break;
         }
     }
+
+              // dynamic상태일때
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // 충돌체에 들어올 때
+        // 아마 근거리 몬스터(PIG)밖에 쓸 일이 없을 것 같다.
 
-        if (collision.gameObject.tag == "SummonMonster")
+        if (collision.gameObject.tag == "SummonMonster" || collision.gameObject.tag == "EnemyMonster")
         {
-            //   Debug.Log("충돌");
             // 1. list에 맨 앞에있는 summonMonster가 enemy 소환 영역 끝까지 갔다면 ( 맵 끝까지 갔다면 )
             // 2. 혹은 summonMonster의 맨 앞에있는 몬스터가 enemyMonster의 맨 앞과 만났다면
 
-            // 1,2를 해결 전에 일단 중앙까지 오면, 뒤의 리스트들은 이동을 멈춘다.
+            // 1,2를 해결 전에 일단 중앙까지 오면, 뒤의 리스트들은 이동을 멈춘다. <- layer를 통해 같은 몬스터끼리는 충돌 못하게 함. 필요없어짐.
             // 그리고 맨 앞이 죽거나, 혹은 쓰러트려서 앞으로 전진한다면 같이 이동
             // 위의 내용을 SummonMgr에 구현 <- 리스트를 가지고 있어야 하니까. 
             // 그렇다면 맨 앞의 몬스터는 자기가 1번이라는것을 알고 있어야 한다. 별도 변수 필요?
 
-            // 일단 멈춰놓자. ㅇㅅㅇ
-            // monsterState = MonsterState.IDLE;
+            //Debug.Log("부딪침");
+            AnimationSetting(MonsterState.ATT);
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         // 충돌체가 떨어질 때
-        if (collision.gameObject.tag == "SummonMonster")
+        if (collision.gameObject.tag == "EnemyMonster" || collision.gameObject.tag == "SummonMonster" )
         {
-            monsterState = MonsterState.RUN;
+            AnimationSetting(MonsterState.RUN);
         }
     }
+    
+
 
     public void SetHp(int damage)
     {
@@ -149,9 +180,10 @@ public class MonsterMove : MonoBehaviour
         Vector3 imageScale = hpFillImageTrans.localScale;
         if (monsterCurHp <= 0)
         {
-            monsterState = MonsterState.DEAD;
+            AnimationSetting(MonsterState.DEAD);
             hpFillImageTrans.localScale = new Vector3(0f, imageScale.y);
 
+            summonMgr.monsterDead(isPlayerSummon);
             // 일단 죽여놓자
             Destroy(gameObject);
             return;
@@ -160,4 +192,30 @@ public class MonsterMove : MonoBehaviour
         float temp = ((float)monsterCurHp / (float)monsterMaxHP);
         hpFillImageTrans.localScale = new Vector3(temp, imageScale.y);
     }
+
+    void AnimationSetting(MonsterState state)
+    {
+        monsterState = state;
+
+        // Animator 변경
+        switch (monsterState)
+        {
+            case MonsterState.IDLE:
+                animator.SetBool("isMoving", false);
+                animator.SetBool("isAtt", false);
+                break;
+            case MonsterState.RUN:
+                animator.SetBool("isMoving", true);
+                animator.SetBool("isAtt", false);
+                break;
+            case MonsterState.ATT:
+                animator.SetBool("isMoving", false);
+                animator.SetBool("isAtt", true);
+                break;
+            case MonsterState.DEAD:
+                break;
+        }
+    }
 }
+
+

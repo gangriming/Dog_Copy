@@ -23,10 +23,7 @@ public class ThrowBox : MonoBehaviour
     void Update()
     {
     }
-
-    private void FixedUpdate()
-    {
-    }
+    
 
     public void PigThrowBox()
     {

@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 5968986506466184522}
   - component: {fileID: 5968986506466184516}
   - component: {fileID: 4876466537184784815}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pig
   m_TagString: SummonMonster
   m_Icon: {fileID: 0}
@@ -199,11 +199,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5968986506466184527}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.7954
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8939e8eb024ea1438fe7f9a03d14d32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 1.2
   monsterMaxHP: 50
   hpFillImageTrans: {fileID: 6726214163752241808}
   isPlayerSummon: 1

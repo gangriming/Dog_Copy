@@ -19,9 +19,64 @@ public class SummonMgr : MonoBehaviour
 
     // 간단한 GetterSetter
     public int Get_CurSummonMonster() { return summonMonsterList.Count; }
+    public bool isEnemyMonsterExist()
+    {
+        if (enemyMonsterList.Count > 0)
+            return true;
+        return false;
+    }
+    public Vector2 NearestMonsterPos()      
+    {
+        if (enemyMonsterList.Count > 0)
+        {
+            return enemyMonsterList[0].transform.localPosition;     // 이렇게 하지말고 다 비교해서 최단거리를 찾아줘야 한다.
+        }
+        Debug.Log("적 몬스터가 없는데 위치를 찾으려고함 <- 뜨면 안됨ㅠ");    // 꼭 isEnemyMonsterExist 체크후 사용.
+        return Vector2.zero;
+    }
+    public bool isSummonMonsterExist()
+    {
+        if (summonMonsterList.Count > 0)
+            return true;
+        return false;
+    }
+    public Vector2 NearestSummonPos()
+    {
+        if (summonMonsterList.Count > 0)
+        {
+            return summonMonsterList[0].transform.localPosition;
+        }
+        Debug.Log("소환 몬스터가 없는데 위치를 찾으려고함 <- 뜨면 안됨ㅠ"); 
+        return Vector2.zero;
+    }
 
+    public void monsterDead(bool isSummon)
+    {
+        if(isSummon)
+        {
+            for (int i = 0; i < summonMonsterList.Count; ++i)
+            {
+                if (summonMonsterList[i].GetComponent<MonsterMove>().GetState() == MonsterState.DEAD)
+                {
+                    summonMonsterList.RemoveAt(i);
+                    return;
+                }
+             }   
+        }
+        else
+        {
+            for (int i = 0; i < enemyMonsterList.Count; ++i)
+            {
+                if (enemyMonsterList[i].GetComponent<MonsterMove>().GetState() == MonsterState.DEAD)
+                {
+                    enemyMonsterList.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+    }
 
-     //-----------------------------------------------
+    //-----------------------------------------------
     private void Awake()
     {
         if (instance)
@@ -55,7 +110,7 @@ public class SummonMgr : MonoBehaviour
             case summonMonsterName.PIG:
                 if (UIMgr.instance.PlayerMoney - 10 >= 0)       // 나중에 상수 구조체로 묶어버리기 걍 대충 해놓ㅇ므
                 {   // 맘ㅇ ㅔ안드는데 코드좀 줄이자
-                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.3f), Quaternion.identity);
+                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.25f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 10;
                     summonMonsterList.Add(temp);
 
@@ -66,7 +121,7 @@ public class SummonMgr : MonoBehaviour
             case summonMonsterName.BOX_PIG:
                 if (UIMgr.instance.PlayerMoney - 20 >= 0)    
                 {
-                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.3f), Quaternion.identity);
+                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.25f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 20;
                     summonMonsterList.Add(temp);
 
@@ -77,7 +132,7 @@ public class SummonMgr : MonoBehaviour
             case summonMonsterName.BOMB_PIG:
                 if (UIMgr.instance.PlayerMoney - 30 >= 0)
                 {
-                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.3f), Quaternion.identity);
+                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.25f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 30;
                     summonMonsterList.Add(temp);
 
@@ -96,9 +151,10 @@ public class SummonMgr : MonoBehaviour
     {
         while (true)
         {
-            var temp = Instantiate(summonMonster[(int)Random.Range(0f, 1.5f)], new Vector3(8f, -1.3f), Quaternion.identity);
+            var temp = Instantiate(summonMonster[(int)Random.Range(0f, 1.5f)], new Vector3(8f, -1.25f), Quaternion.identity);
             temp.GetComponent<MonsterMove>().IsPlayerSummon = false;
             temp.tag = "EnemyMonster";      // 적으로 태그 변경
+            temp.layer = 9;     // 레이어도 적으로 변경
             enemyMonsterList.Add(temp);
 
             Debug.Log("적 소환");
