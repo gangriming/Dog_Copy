@@ -23,7 +23,8 @@ public class MonsterMove : MonoBehaviour
             else
             {
                 spriteRenderer.flipX = false;
-                spriteRenderer.color = new Color(0.7735f, 0.3977f, 0.3977f);
+                spriteRenderer.color = new Color(1f, 0.3977f, 0.3977f);
+                
             }
         }
     }
@@ -31,11 +32,13 @@ public class MonsterMove : MonoBehaviour
 
 
     // -사용 변수-
+    SummonMgr summonMgr;
     Rigidbody2D myRigidbody;
     SpriteRenderer spriteRenderer;
     MonsterState monsterState = MonsterState.IDLE;
+
     public MonsterState GetState() { return monsterState; }
-    SummonMgr summonMgr;
+    public void SetState(MonsterState state) { monsterState = state; }  // 임시
     public summonMonsterName monsterName;
 
     int monsterCurHp = 50;
@@ -121,23 +124,45 @@ public class MonsterMove : MonoBehaviour
                     break;
                 }
             case MonsterState.ATT:
-                if (monsterName == summonMonsterName.BOX_PIG
-                    && attTime <= 0f
-                    && GetComponent<SpriteRenderer>().sprite.name == "Throwing Box (26x30)_3")      // 특정 프레임에 공격 다른 방법이 있을까?
                 {
-                    attTime = 1f;
-                    GetComponent<ThrowBox>().PigThrowBox();
-                }
-                else if (monsterName == summonMonsterName.BOMB_PIG
-                    && attTime <= 0f
-                    && GetComponent<SpriteRenderer>().sprite.name == "Throwing Boom (26x26)_3")    
-                {
-                    attTime = 2f;
-                    GetComponent<ThrowBox>().PigThrowBox();
-                }
+                    if (monsterName == summonMonsterName.BOX_PIG
+                      && attTime <= 0f
+                      && GetComponent<SpriteRenderer>().sprite.name == "Throwing Box (26x30)_3")      // 특정 프레임에 공격 다른 방법이 있을까?
+                    {
+                        attTime = 1f;
+                        GetComponent<ThrowBox>().PigThrowBox();
+                    }
+                    else if (monsterName == summonMonsterName.BOMB_PIG
+                        && attTime <= 0f
+                        && GetComponent<SpriteRenderer>().sprite.name == "Throwing Boom (26x26)_3")
+                    {
+                        attTime = 2f;
+                        GetComponent<ThrowBox>().PigThrowBox();
+                    }
 
 
-                break;
+                    if (monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG)
+                    {
+                        if (!summonMgr.isSummonMonsterExist())
+                            AnimationSetting(MonsterState.RUN);
+                        //else
+                        //{
+                        //    if (Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos()) < 5f)
+                        //        AnimationSetting(MonsterState.IDLE);
+                        //}
+                    }
+                    break;
+                }
+            case MonsterState.IDLE:
+                {
+                    if (summonMgr.isEnemyMonsterExist()
+                          && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) > 5f
+                            && monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG)       // 원거리 몬스터 이면서 멀면
+                    {
+                        AnimationSetting(MonsterState.RUN);
+                    }
+                        break;
+                }
         }
     }
 
@@ -185,7 +210,7 @@ public class MonsterMove : MonoBehaviour
 
             summonMgr.monsterDead(isPlayerSummon);
             // 일단 죽여놓자
-            Destroy(gameObject);
+            Destroy(gameObject);        // 나중에 오브젝트 풀 연동해서 setactive바꾸기
             return;
         }
 

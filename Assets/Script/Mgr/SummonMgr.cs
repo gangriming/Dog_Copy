@@ -9,6 +9,7 @@ public class SummonMgr : MonoBehaviour
     public static SummonMgr instance = null;
     
     public GameObject[] summonMonster ; // 소환할 몬스터 목록.
+    public GameObject floatingText;
 
     public int maxSummonCount = 10;
     public float enemySummonTime = 3f;
@@ -19,6 +20,7 @@ public class SummonMgr : MonoBehaviour
 
     // 간단한 GetterSetter
     public int Get_CurSummonMonster() { return summonMonsterList.Count; }
+
     public bool isEnemyMonsterExist()
     {
         if (enemyMonsterList.Count > 0)
@@ -29,11 +31,23 @@ public class SummonMgr : MonoBehaviour
     {
         if (enemyMonsterList.Count > 0)
         {
-            return enemyMonsterList[0].transform.localPosition;     // 이렇게 하지말고 다 비교해서 최단거리를 찾아줘야 한다.
+            float near = -99999f;
+            int index = 0;
+            for(int i = 0; i < enemyMonsterList.Count; ++i)
+            {
+                if (near < enemyMonsterList[i].transform.localPosition.x)
+                {
+                    near = enemyMonsterList[i].transform.localPosition.x;
+                    index = i;
+                }
+            }
+            return new Vector2(near, enemyMonsterList[index].transform.localPosition.y);
         }
         Debug.Log("적 몬스터가 없는데 위치를 찾으려고함 <- 뜨면 안됨ㅠ");    // 꼭 isEnemyMonsterExist 체크후 사용.
         return Vector2.zero;
     }
+
+
     public bool isSummonMonsterExist()
     {
         if (summonMonsterList.Count > 0)
@@ -44,7 +58,17 @@ public class SummonMgr : MonoBehaviour
     {
         if (summonMonsterList.Count > 0)
         {
-            return summonMonsterList[0].transform.localPosition;
+            float near = 99999f;
+            int index = 0;
+            for (int i = 0; i < summonMonsterList.Count; ++i)
+            {
+                if (near > summonMonsterList[i].transform.localPosition.x)
+                {
+                    near = summonMonsterList[i].transform.localPosition.x;
+                    index = i;
+                }
+            }
+            return new Vector2(near, summonMonsterList[index].transform.localPosition.y);
         }
         Debug.Log("소환 몬스터가 없는데 위치를 찾으려고함 <- 뜨면 안됨ㅠ"); 
         return Vector2.zero;
@@ -74,6 +98,12 @@ public class SummonMgr : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void Make_FloatingTextOnHead(string str, Vector2 pos, bool isSummon)
+    {
+        var floating = Instantiate(floatingText, new Vector2(pos.x, pos.y), Quaternion.identity);
+        floating.GetComponent<FloatingTextEffect>().FloatingText_Setting(str, isSummon);
     }
 
     //-----------------------------------------------
@@ -110,7 +140,7 @@ public class SummonMgr : MonoBehaviour
             case summonMonsterName.PIG:
                 if (UIMgr.instance.PlayerMoney - 10 >= 0)       // 나중에 상수 구조체로 묶어버리기 걍 대충 해놓ㅇ므
                 {   // 맘ㅇ ㅔ안드는데 코드좀 줄이자
-                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.25f), Quaternion.identity);
+                    var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.25f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 10;
                     summonMonsterList.Add(temp);
 
@@ -121,7 +151,7 @@ public class SummonMgr : MonoBehaviour
             case summonMonsterName.BOX_PIG:
                 if (UIMgr.instance.PlayerMoney - 20 >= 0)    
                 {
-                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.25f), Quaternion.identity);
+                    var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.25f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 20;
                     summonMonsterList.Add(temp);
 
@@ -132,7 +162,7 @@ public class SummonMgr : MonoBehaviour
             case summonMonsterName.BOMB_PIG:
                 if (UIMgr.instance.PlayerMoney - 30 >= 0)
                 {
-                    var temp = Instantiate(summonMonster[index], new Vector3(-7.0f, -1.25f), Quaternion.identity);
+                    var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.25f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 30;
                     summonMonsterList.Add(temp);
 
@@ -151,7 +181,7 @@ public class SummonMgr : MonoBehaviour
     {
         while (true)
         {
-            var temp = Instantiate(summonMonster[(int)Random.Range(0f, 1.5f)], new Vector3(8f, -1.25f), Quaternion.identity);
+            var temp = Instantiate(summonMonster[(int)Random.Range(0f, 1.5f)], new Vector3(22f, -1.25f), Quaternion.identity);
             temp.GetComponent<MonsterMove>().IsPlayerSummon = false;
             temp.tag = "EnemyMonster";      // 적으로 태그 변경
             temp.layer = 9;     // 레이어도 적으로 변경
