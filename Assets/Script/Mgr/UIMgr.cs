@@ -106,7 +106,9 @@ public class UIMgr : MonoBehaviour
             }
 
             float temp = ((float)playerHp / (float)playerMaxHp);
+
             playerHpImage.transform.localScale = new Vector3(temp, imageScale.y);
+            StartCoroutine(playerHpImage.transform.parent.GetComponent<UIShake>().Shake(10f, 0.5f));        // UIShake
         }
         else
         {
@@ -119,7 +121,9 @@ public class UIMgr : MonoBehaviour
             }
 
             float temp = ((float)enemyHp / (float)enemyMaxHp);
+
             enemyHpImage.transform.localScale = new Vector3(temp, imageScale.y);
+            StartCoroutine(enemyHpImage.transform.parent.GetComponent<UIShake>().Shake(10f, 0.5f));
         }
 
     }
