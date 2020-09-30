@@ -35,15 +35,15 @@ public class ThrowBox : MonoBehaviour
         DesPos.y += Random.Range(1.3f, 3.5f);
 
         createBox = Instantiate(boxObject, throwPos, Quaternion.identity);
-        if (!GetComponent<MonsterMove>().IsPlayerSummon)
+        if (!GetComponent<Monster>().IsPlayerSummon)
             createBox.tag = "EnemyMissile";
 
-        if(!GetComponent<MonsterMove>().IsPlayerSummon)
+        if(!GetComponent<Monster>().IsPlayerSummon)
             createBox.GetComponent<SpriteRenderer>().color = new Color(1f, 0.3977f, 0.3977f);
         //   createBox.transform.right = new Vector3(DesPos.x - throwPos.x, DesPos.y - throwPos.y, 0f);
 
         // 낼 자연스럽게 손보기,.
-        if (GetComponent<MonsterMove>().IsPlayerSummon)
+        if (GetComponent<Monster>().IsPlayerSummon)
             createBox.GetComponent<Rigidbody2D>().velocity = createBox.transform.right * 8f;
         else
             createBox.GetComponent<Rigidbody2D>().velocity = -createBox.transform.right * 8f;

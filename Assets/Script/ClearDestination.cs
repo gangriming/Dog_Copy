@@ -12,7 +12,7 @@ public class ClearDestination : MonoBehaviour
         if(isPlayerDestination &&
             collision.tag == "EnemyMonster")         // 소환 몬스터 생성 지점에 enemyMonster가 들어오게 된다면.
         {
-            collision.gameObject.GetComponent<MonsterMove>().SetState(MonsterState.DEAD);
+            collision.gameObject.GetComponent<Monster>().SetState(MonsterState.DEAD);
             SummonMgr.instance.monsterDead(false);
             Destroy(collision.gameObject);              // 파괴 -> 후에 오브젝트 풀링으로 대체 
             // 개맘에안든다
@@ -22,8 +22,8 @@ public class ClearDestination : MonoBehaviour
         else if(!isPlayerDestination &&
             collision.tag == "SummonMonster")
         {
-            collision.gameObject.GetComponent<MonsterMove>().SetState(MonsterState.DEAD);
-            SummonMgr.instance.monsterDead(false);
+            collision.gameObject.GetComponent<Monster>().SetState(MonsterState.DEAD);
+            SummonMgr.instance.monsterDead(true);
             Destroy(collision.gameObject);              // 파괴 -> 후에 오브젝트 풀링으로 대체
             UIMgr.instance.SetTotalHp(10, false);
         }

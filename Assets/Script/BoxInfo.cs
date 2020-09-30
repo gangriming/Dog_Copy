@@ -43,7 +43,7 @@ public class BoxInfo : MonoBehaviour
             Destroy(gameObject);
             if (!onceAtt)
             {
-                collision.gameObject.GetComponent<MonsterMove>().SetHp(20);
+                collision.gameObject.GetComponent<Monster>().SetHp(20);
                 onceAtt = true;
                 SummonMgr.instance.Make_FloatingTextOnHead(20.ToString(), new Vector2(collision.transform.localPosition.x, collision.transform.localPosition.y + 0.6f), false);
             }
@@ -57,7 +57,7 @@ public class BoxInfo : MonoBehaviour
 
             if (!onceAtt)
             {
-                collision.gameObject.GetComponent<MonsterMove>().SetHp(20);
+                collision.gameObject.GetComponent<Monster>().SetHp(20);
                 onceAtt = true;
                 SummonMgr.instance.Make_FloatingTextOnHead(20.ToString(), new Vector2(collision.transform.localPosition.x, collision.transform.localPosition.y + 0.6f), true);
             }

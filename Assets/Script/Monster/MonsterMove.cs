@@ -2,80 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum MonsterState { IDLE, RUN, ATT, DEAD };
 
-public class MonsterMove : MonoBehaviour
+public class MonsterMove :  Monster
 {
-    [Range(1.0f, 2.0f)]
-    public float speed = 1.0f;
-    public int monsterMaxHP = 50;
-    public Transform hpFillImageTrans;
-
-    // -읽을 수 있는 변수들-
-    public bool IsPlayerSummon
-    {
-        get { return isPlayerSummon; }
-        set
-        {
-            isPlayerSummon = value;
-            if (isPlayerSummon)
-                spriteRenderer.flipX = true;
-            else
-            {
-                spriteRenderer.flipX = false;
-                spriteRenderer.color = new Color(1f, 0.3977f, 0.3977f);
-                
-            }
-        }
-    }
-    public bool isPlayerSummon = true;      // 플레이어가 소환했는지.
-
-
-    // -사용 변수-
-    SummonMgr summonMgr;
-    Rigidbody2D myRigidbody;
-    SpriteRenderer spriteRenderer;
-    MonsterState monsterState = MonsterState.IDLE;
-
-    public MonsterState GetState() { return monsterState; }
-    public void SetState(MonsterState state) { monsterState = state; }  // 임시
-    public summonMonsterName monsterName;
-
-    int monsterCurHp = 50;
-
-    // -애니메이터 변수-
-    Animator animator;
-    float attTime = 0.2f;
-
+    
     private void Awake()
     {
-        myRigidbody = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
-
-        if (isPlayerSummon)
-            spriteRenderer.flipX = true;
-        else
-            spriteRenderer.flipX = false;
-
-
-        AnimationSetting(MonsterState.RUN);
-        monsterCurHp = monsterMaxHP;
-
-        /*
-        // debug용
-        if (monsterName == summonMonsterName.BOX_PIG
-            || monsterName == summonMonsterName.BOMB_PIG)
-        {
-            animator.SetBool("isAtt", true);
-            monsterState = MonsterState.ATT;
-        }
-        */
-    }
-
-    private void Start()
-    {
-        summonMgr = SummonMgr.instance;
+        base.setting();     // 기존 awake를 옮김.
     }
 
     // Update is called once per frame
@@ -105,7 +38,7 @@ public class MonsterMove : MonoBehaviour
 
                         if (summonMgr.isEnemyMonsterExist()
                             && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) < 5f
-                            && monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG)       // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
+                            && monsterName == MonsterName.BOX_PIG || monsterName == MonsterName.BOMB_PIG)       // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
                         }
@@ -116,7 +49,7 @@ public class MonsterMove : MonoBehaviour
 
                         if (summonMgr.isSummonMonsterExist()
                             && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos()) < 5f 
-                            && monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG) // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
+                            && monsterName == MonsterName.BOX_PIG || monsterName == MonsterName.BOMB_PIG) // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
                         }
@@ -125,14 +58,14 @@ public class MonsterMove : MonoBehaviour
                 }
             case MonsterState.ATT:
                 {
-                    if (monsterName == summonMonsterName.BOX_PIG
+                    if (monsterName == MonsterName.BOX_PIG
                       && attTime <= 0f
                       && GetComponent<SpriteRenderer>().sprite.name == "Throwing Box (26x30)_3")      // 특정 프레임에 공격 다른 방법이 있을까?
                     {
                         attTime = 1f;
                         GetComponent<ThrowBox>().PigThrowBox();
                     }
-                    else if (monsterName == summonMonsterName.BOMB_PIG
+                    else if (monsterName == MonsterName.BOMB_PIG
                         && attTime <= 0f
                         && GetComponent<SpriteRenderer>().sprite.name == "Throwing Boom (26x26)_3")
                     {
@@ -141,7 +74,7 @@ public class MonsterMove : MonoBehaviour
                     }
 
 
-                    if (monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG)
+                    if (monsterName == MonsterName.BOX_PIG || monsterName == MonsterName.BOMB_PIG)
                     {
                         if (!summonMgr.isSummonMonsterExist())
                             AnimationSetting(MonsterState.RUN);
@@ -157,7 +90,7 @@ public class MonsterMove : MonoBehaviour
                 {
                     if (summonMgr.isEnemyMonsterExist()
                           && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) > 5f
-                            && monsterName == summonMonsterName.BOX_PIG || monsterName == summonMonsterName.BOMB_PIG)       // 원거리 몬스터 이면서 멀면
+                            && monsterName == MonsterName.BOX_PIG || monsterName == MonsterName.BOMB_PIG)       // 원거리 몬스터 이면서 멀면
                     {
                         AnimationSetting(MonsterState.RUN);
                     }
@@ -197,50 +130,29 @@ public class MonsterMove : MonoBehaviour
     }
     
 
+    //void AnimationSetting(MonsterState state)
+    //{
+    //    monsterState = state;
 
-    public void SetHp(int damage)
-    {
-        monsterCurHp -= damage;
-
-        Vector3 imageScale = hpFillImageTrans.localScale;
-        if (monsterCurHp <= 0)
-        {
-            AnimationSetting(MonsterState.DEAD);
-            hpFillImageTrans.localScale = new Vector3(0f, imageScale.y);
-
-            summonMgr.monsterDead(isPlayerSummon);
-            // 일단 죽여놓자
-            Destroy(gameObject);        // 나중에 오브젝트 풀 연동해서 setactive바꾸기
-            return;
-        }
-
-        float temp = ((float)monsterCurHp / (float)monsterMaxHP);
-        hpFillImageTrans.localScale = new Vector3(temp, imageScale.y);
-    }
-
-    void AnimationSetting(MonsterState state)
-    {
-        monsterState = state;
-
-        // Animator 변경
-        switch (monsterState)
-        {
-            case MonsterState.IDLE:
-                animator.SetBool("isMoving", false);
-                animator.SetBool("isAtt", false);
-                break;
-            case MonsterState.RUN:
-                animator.SetBool("isMoving", true);
-                animator.SetBool("isAtt", false);
-                break;
-            case MonsterState.ATT:
-                animator.SetBool("isMoving", false);
-                animator.SetBool("isAtt", true);
-                break;
-            case MonsterState.DEAD:
-                break;
-        }
-    }
+    //    // Animator 변경
+    //    switch (monsterState)
+    //    {
+    //        case MonsterState.IDLE:
+    //            animator.SetBool("isMoving", false);
+    //            animator.SetBool("isAtt", false);
+    //            break;
+    //        case MonsterState.RUN:
+    //            animator.SetBool("isMoving", true);
+    //            animator.SetBool("isAtt", false);
+    //            break;
+    //        case MonsterState.ATT:
+    //            animator.SetBool("isMoving", false);
+    //            animator.SetBool("isAtt", true);
+    //            break;
+    //        case MonsterState.DEAD:
+    //            break;
+    //    }
+    //}
 }
 
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum summonMonsterName { PIG, BOX_PIG, BOMB_PIG, KING_PIG, HUMAN };
 
 public class SummonMgr : MonoBehaviour
 {
@@ -80,9 +79,10 @@ public class SummonMgr : MonoBehaviour
         {
             for (int i = 0; i < summonMonsterList.Count; ++i)
             {
-                if (summonMonsterList[i].GetComponent<MonsterMove>().GetState() == MonsterState.DEAD)
+                if (summonMonsterList[i].GetComponent<Monster>().GetState() == MonsterState.DEAD)
                 {
                     summonMonsterList.RemoveAt(i);
+                    UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
                     return;
                 }
              }   
@@ -91,7 +91,7 @@ public class SummonMgr : MonoBehaviour
         {
             for (int i = 0; i < enemyMonsterList.Count; ++i)
             {
-                if (enemyMonsterList[i].GetComponent<MonsterMove>().GetState() == MonsterState.DEAD)
+                if (enemyMonsterList[i].GetComponent<Monster>().GetState() == MonsterState.DEAD)
                 {
                     enemyMonsterList.RemoveAt(i);
                     return;
@@ -135,9 +135,9 @@ public class SummonMgr : MonoBehaviour
 
         UIMgr uiMgr = UIMgr.instance;
 
-        switch ((summonMonsterName)index)
+        switch ((MonsterName)index)
         {
-            case summonMonsterName.PIG:
+            case MonsterName.PIG:
                 if (UIMgr.instance.PlayerMoney - 10 >= 0)       // 나중에 상수 구조체로 묶어버리기 걍 대충 해놓ㅇ므
                 {   // 맘ㅇ ㅔ안드는데 코드좀 줄이자
                     var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.25f), Quaternion.identity);
@@ -148,7 +148,7 @@ public class SummonMgr : MonoBehaviour
                     return true;
                 }
                 return false;
-            case summonMonsterName.BOX_PIG:
+            case MonsterName.BOX_PIG:
                 if (UIMgr.instance.PlayerMoney - 20 >= 0)    
                 {
                     var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.25f), Quaternion.identity);
@@ -159,7 +159,7 @@ public class SummonMgr : MonoBehaviour
                     return true;
                 }
                 return false;
-            case summonMonsterName.BOMB_PIG:
+            case MonsterName.BOMB_PIG:
                 if (UIMgr.instance.PlayerMoney - 30 >= 0)
                 {
                     var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.25f), Quaternion.identity);
@@ -182,7 +182,7 @@ public class SummonMgr : MonoBehaviour
         while (true)
         {
             var temp = Instantiate(summonMonster[(int)Random.Range(0f, 1.5f)], new Vector3(22f, -1.25f), Quaternion.identity);
-            temp.GetComponent<MonsterMove>().IsPlayerSummon = false;
+            temp.GetComponent<Monster>().IsPlayerSummon = false;
             temp.tag = "EnemyMonster";      // 적으로 태그 변경
             temp.layer = 9;     // 레이어도 적으로 변경
             enemyMonsterList.Add(temp);
