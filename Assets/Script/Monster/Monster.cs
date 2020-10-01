@@ -56,6 +56,7 @@ public class Monster : MonoBehaviour
     public MonsterState GetState() { return monsterState; }
     public void SetState(MonsterState state) { monsterState = state; }  // 임시
 
+    protected Transform targetMonster;
 
     protected void AnimationSetting(MonsterState state)
     {

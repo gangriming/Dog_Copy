@@ -21,10 +21,13 @@ public class Pig_Monster : Monster
     {
         if (monsterState == MonsterState.ATT)
         {
-            if (isPlayerSummon && !summonMgr.isEnemyMonsterExist())
-                AnimationSetting(MonsterState.RUN);
-            else if (!isPlayerSummon && !summonMgr.isSummonMonsterExist())
-                AnimationSetting(MonsterState.RUN);
+            //if (isPlayerSummon && !summonMgr.isEnemyMonsterExist())
+            //    AnimationSetting(MonsterState.RUN);
+            //else if (!isPlayerSummon && !summonMgr.isSummonMonsterExist())
+            //    AnimationSetting(MonsterState.RUN);
+
+            if (!targetMonster)
+                AnimationSetting(MonsterState.RUN);     // 타겟된게 없으면 RUN
         }
         attTime -= Time.deltaTime;
     }
@@ -93,16 +96,17 @@ public class Pig_Monster : Monster
         if (collision.gameObject.tag == "SummonMonster" || collision.gameObject.tag == "EnemyMonster")
         {
             AnimationSetting(MonsterState.ATT);
+            targetMonster = collision.gameObject.transform;
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        // 충돌체가 떨어질 때
-        if (collision.gameObject.tag == "EnemyMonster" || collision.gameObject.tag == "SummonMonster")
-        {
-            AnimationSetting(MonsterState.RUN);
-        }
+        //// 충돌체가 떨어질 때
+        //if (collision.gameObject.tag == "EnemyMonster" || collision.gameObject.tag == "SummonMonster")
+        //{
+        //    AnimationSetting(MonsterState.RUN);
+        //}
     }
 
 

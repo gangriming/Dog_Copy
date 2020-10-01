@@ -37,7 +37,7 @@ public class MonsterMove :  Monster
                         myRigidbody.MovePosition(new Vector2(myRigidbody.position.x + (speed * Time.fixedDeltaTime), myRigidbody.position.y));
 
                         if (summonMgr.isEnemyMonsterExist()
-                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) < 5f
+                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos().localPosition) < 5f
                             && monsterName == MonsterName.BOX_PIG || monsterName == MonsterName.BOMB_PIG)       // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
@@ -48,7 +48,7 @@ public class MonsterMove :  Monster
                         myRigidbody.MovePosition(new Vector2(myRigidbody.position.x - (speed * Time.fixedDeltaTime), myRigidbody.position.y));
 
                         if (summonMgr.isSummonMonsterExist()
-                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos()) < 5f 
+                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos().localPosition) < 5f 
                             && monsterName == MonsterName.BOX_PIG || monsterName == MonsterName.BOMB_PIG) // 원거리 몬스터 이면서, 공격에 맞게 일정 이상 가까워지면
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
@@ -89,7 +89,7 @@ public class MonsterMove :  Monster
             case MonsterState.IDLE:
                 {
                     if (summonMgr.isEnemyMonsterExist()
-                          && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) > 5f
+                          && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos().localPosition) > 5f
                             && monsterName == MonsterName.BOX_PIG || monsterName == MonsterName.BOMB_PIG)       // 원거리 몬스터 이면서 멀면
                     {
                         AnimationSetting(MonsterState.RUN);

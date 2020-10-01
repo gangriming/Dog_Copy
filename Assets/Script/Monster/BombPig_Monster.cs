@@ -37,7 +37,7 @@ public class BombPig_Monster : Monster
                     {
                         myRigidbody.MovePosition(new Vector2(myRigidbody.position.x + (speed * Time.fixedDeltaTime), myRigidbody.position.y));
                         if (summonMgr.isEnemyMonsterExist()
-                             && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) < 5f)
+                             && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos().localPosition) < 5f)
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
                         }
@@ -47,7 +47,7 @@ public class BombPig_Monster : Monster
                         myRigidbody.MovePosition(new Vector2(myRigidbody.position.x - (speed * Time.fixedDeltaTime), myRigidbody.position.y));
 
                         if (summonMgr.isSummonMonsterExist()
-                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos()) < 5f)
+                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos().localPosition) < 5f)
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
                         }
@@ -72,7 +72,7 @@ public class BombPig_Monster : Monster
             case MonsterState.IDLE:
                 {
                     if (summonMgr.isEnemyMonsterExist()
-                         && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) > 5f)
+                         && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos().localPosition) > 5f)
                     {
                         AnimationSetting(MonsterState.RUN);
                     }

@@ -18,17 +18,19 @@ public class BoxPig_Monster : Monster
     {
         if (monsterState == MonsterState.ATT)
         {
-            if (isPlayerSummon && !summonMgr.isEnemyMonsterExist())
-                AnimationSetting(MonsterState.RUN);
-            else if (!isPlayerSummon && !summonMgr.isSummonMonsterExist())
-                AnimationSetting(MonsterState.RUN);
+            //if (isPlayerSummon && !summonMgr.isEnemyMonsterExist())
+            //    AnimationSetting(MonsterState.RUN);
+            //else if (!isPlayerSummon && !summonMgr.isSummonMonsterExist())
+            //    AnimationSetting(MonsterState.RUN);
+
+            if (!targetMonster)
+                AnimationSetting(MonsterState.RUN);     // 타겟된게 없으면 RUN
         }
     }
 
     private void FixedUpdate()
     {
         attTime -= Time.deltaTime;
-
         // 이동말고도 Att, Dead, 다른 몬스터에 의해 멈출때 분기.
         switch (monsterState)
         {
@@ -37,10 +39,12 @@ public class BoxPig_Monster : Monster
                     if (isPlayerSummon)      // 오른쪽으로 가는 Summon
                     {
                         myRigidbody.MovePosition(new Vector2(myRigidbody.position.x + (speed * Time.fixedDeltaTime), myRigidbody.position.y));
+
                         if (summonMgr.isEnemyMonsterExist()
-                             && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) < 5f)
+                             && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos().localPosition) < 5f)
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
+                            targetMonster = summonMgr.NearestMonsterPos();
                         }
                     }
                     else                        // 왼쪽으로 오는 Enemy
@@ -48,9 +52,10 @@ public class BoxPig_Monster : Monster
                         myRigidbody.MovePosition(new Vector2(myRigidbody.position.x - (speed * Time.fixedDeltaTime), myRigidbody.position.y));
 
                         if (summonMgr.isSummonMonsterExist()
-                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos()) < 5f)
+                            && Vector2.Distance(myRigidbody.position, summonMgr.NearestSummonPos().localPosition) < 5f)
                         {
                             AnimationSetting(MonsterState.ATT);     // 공격.
+                            targetMonster = summonMgr.NearestSummonPos();
                         }
 
                     }
@@ -65,14 +70,15 @@ public class BoxPig_Monster : Monster
                         GetComponent<ThrowBox>().PigThrowBox();
                     }
                     
-                        if (!summonMgr.isSummonMonsterExist())
+                        if (!targetMonster)
                             AnimationSetting(MonsterState.RUN);
+
                     break;
                 }
             case MonsterState.IDLE:
                 {
                     if (summonMgr.isEnemyMonsterExist()
-                         && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos()) > 5f)
+                         && Vector2.Distance(myRigidbody.position, summonMgr.NearestMonsterPos().localPosition) > 5f)
                     {
                         AnimationSetting(MonsterState.RUN);
                     }
@@ -83,19 +89,19 @@ public class BoxPig_Monster : Monster
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "SummonMonster" || collision.gameObject.tag == "EnemyMonster")
-        {
-            AnimationSetting(MonsterState.ATT);
-        }
+        //if (collision.gameObject.tag == "SummonMonster" || collision.gameObject.tag == "EnemyMonster")
+        //{
+        //    AnimationSetting(MonsterState.ATT);
+        //}
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        // 충돌체가 떨어질 때
-        if (collision.gameObject.tag == "EnemyMonster" || collision.gameObject.tag == "SummonMonster")
-        {
-            AnimationSetting(MonsterState.RUN);
-        }
+        //// 충돌체가 떨어질 때
+        //if (collision.gameObject.tag == "EnemyMonster" || collision.gameObject.tag == "SummonMonster")
+        //{
+        //    AnimationSetting(MonsterState.RUN);
+        //}
     }
 
 }

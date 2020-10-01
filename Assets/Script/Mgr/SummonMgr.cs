@@ -26,24 +26,25 @@ public class SummonMgr : MonoBehaviour
             return true;
         return false;
     }
-    public Vector2 NearestMonsterPos()      
+    public Transform NearestMonsterPos()      
     {
         if (enemyMonsterList.Count > 0)
         {
-            float near = -99999f;
+
+            float near = 99999f;
             int index = 0;
             for(int i = 0; i < enemyMonsterList.Count; ++i)
             {
-                if (near < enemyMonsterList[i].transform.localPosition.x)
+                if (near > enemyMonsterList[i].transform.localPosition.x)
                 {
                     near = enemyMonsterList[i].transform.localPosition.x;
                     index = i;
                 }
             }
-            return new Vector2(near, enemyMonsterList[index].transform.localPosition.y);
+            return enemyMonsterList[index].transform;/* new Vector2(near, enemyMonsterList[index].transform.localPosition.y);*/
         }
         Debug.Log("적 몬스터가 없는데 위치를 찾으려고함 <- 뜨면 안됨ㅠ");    // 꼭 isEnemyMonsterExist 체크후 사용.
-        return Vector2.zero;
+        return transform;
     }
 
 
@@ -53,24 +54,24 @@ public class SummonMgr : MonoBehaviour
             return true;
         return false;
     }
-    public Vector2 NearestSummonPos()
+    public Transform NearestSummonPos()
     {
         if (summonMonsterList.Count > 0)
         {
-            float near = 99999f;
+            float near = -99999f;
             int index = 0;
             for (int i = 0; i < summonMonsterList.Count; ++i)
             {
-                if (near > summonMonsterList[i].transform.localPosition.x)
+                if (near < summonMonsterList[i].transform.localPosition.x)
                 {
                     near = summonMonsterList[i].transform.localPosition.x;
                     index = i;
                 }
             }
-            return new Vector2(near, summonMonsterList[index].transform.localPosition.y);
+            return summonMonsterList[index].transform;/*new Vector2(near, summonMonsterList[index].transform.localPosition.y)*/;
         }
         Debug.Log("소환 몬스터가 없는데 위치를 찾으려고함 <- 뜨면 안됨ㅠ"); 
-        return Vector2.zero;
+        return transform;
     }
 
     public void monsterDead(bool isSummon)
