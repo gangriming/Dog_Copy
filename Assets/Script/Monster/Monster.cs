@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum MonsterState { IDLE, RUN, ATT, DEAD };
+public enum MonsterState { IDLE, RUN, ATT, HIT, DEAD };
 public enum MonsterName { PIG, BOX_PIG, BOMB_PIG, KING_PIG, HUMAN };
 
 public class Monster : MonoBehaviour
@@ -77,6 +77,9 @@ public class Monster : MonoBehaviour
                 animator.SetBool("isMoving", false);
                 animator.SetBool("isAtt", true);
                 break;
+            case MonsterState.HIT:
+                animator.SetTrigger("isHit");
+                break;
             case MonsterState.DEAD:
                 break;
         }
@@ -97,7 +100,8 @@ public class Monster : MonoBehaviour
             Destroy(gameObject);        // 나중에 오브젝트 풀 연동해서 setactive바꾸기
             return;
         }
-
+        
+       AnimationSetting(MonsterState.HIT);
         float temp = ((float)monsterCurHp / (float)monsterMaxHP);
         hpFillImageTrans.localScale = new Vector3(temp, imageScale.y);
     }

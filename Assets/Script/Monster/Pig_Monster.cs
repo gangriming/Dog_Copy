@@ -21,11 +21,6 @@ public class Pig_Monster : Monster
     {
         if (monsterState == MonsterState.ATT)
         {
-            //if (isPlayerSummon && !summonMgr.isEnemyMonsterExist())
-            //    AnimationSetting(MonsterState.RUN);
-            //else if (!isPlayerSummon && !summonMgr.isSummonMonsterExist())
-            //    AnimationSetting(MonsterState.RUN);
-
             if (!targetMonster)
                 AnimationSetting(MonsterState.RUN);     // 타겟된게 없으면 RUN
         }
@@ -84,8 +79,16 @@ public class Pig_Monster : Monster
                     }
                     break;
                 }
-            case MonsterState.IDLE:
+            case MonsterState.HIT:
                 {
+                    attTime = 0.6f;
+                    if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+                    {
+                        if(targetMonster)
+                            AnimationSetting(MonsterState.ATT);
+                        else
+                            AnimationSetting(MonsterState.RUN);
+                    }
                     break;
                 }
         }
