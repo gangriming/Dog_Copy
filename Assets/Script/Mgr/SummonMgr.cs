@@ -16,6 +16,8 @@ public class SummonMgr : MonoBehaviour
     // SummonMgr에서는 소환한 몬스터의 리스트를 가지고 있는다.
     List<GameObject> summonMonsterList = new List<GameObject>();        // 버튼으로 소환한 내 몬스터
     List<GameObject> enemyMonsterList = new List<GameObject>();          // 일정시간마다 나오는 적의 몬스터
+    // 타워 어떻게 관리하지?
+    //List<int>
 
     // 간단한 GetterSetter
     public int Get_CurSummonMonster() { return summonMonsterList.Count; }
@@ -101,10 +103,43 @@ public class SummonMgr : MonoBehaviour
         }
     }
 
+    public void debugSummonlistAdd(GameObject obj)
+    {
+        summonMonsterList.Add(obj);
+    }
+
     public void Make_FloatingTextOnHead(string str, Vector2 pos, bool isSummon)
     {
         var floating = Instantiate(floatingText, new Vector2(pos.x, pos.y), Quaternion.identity);
         floating.GetComponent<FloatingTextEffect>().FloatingText_Setting(str, isSummon);
+    }
+
+    public void NextStage_Prepare(StageSeq stage)
+    {
+        foreach (var item in summonMonsterList)
+            Destroy(item);
+        foreach (var item in enemyMonsterList)
+            Destroy(item);
+        summonMonsterList.Clear();
+        enemyMonsterList.Clear();
+        
+        switch (stage)
+        {
+            case StageSeq.ST2:
+                maxSummonCount = 12;
+                enemySummonTime = 3f;
+                break;
+            case StageSeq.ST3:
+                maxSummonCount = 15;
+                enemySummonTime = 2.5f;
+                break;
+            case StageSeq.ENDST:
+                maxSummonCount = 17;
+                enemySummonTime = 2f;
+                break;
+            default:
+                break;
+        }
     }
 
     //-----------------------------------------------
@@ -169,6 +204,12 @@ public class SummonMgr : MonoBehaviour
 
                     UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
                     return true;
+                }
+                return false;
+            case MonsterName.TOWER:
+                if (UIMgr.instance.PlayerMoney - 50 >= 0)
+                {
+                    //타워
                 }
                 return false;
             default:

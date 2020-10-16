@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum MonsterState { IDLE, RUN, ATT, HIT, DEAD };
-public enum MonsterName { PIG, BOX_PIG, BOMB_PIG, KING_PIG, HUMAN };
+public enum MonsterName { PIG, BOX_PIG, BOMB_PIG, TOWER, KING_PIG, HUMAN };
 
 public class Monster : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public class Monster : MonoBehaviour
     public float speed = 1.0f;
     public int monsterMaxHP = 50;
     public Transform hpFillImageTrans;
+    protected AudioSource hitSound;
 
     // -읽을 수 있는 변수들-
     public bool IsPlayerSummon
@@ -62,6 +63,9 @@ public class Monster : MonoBehaviour
     {
         monsterState = state;
 
+        if (monsterName == MonsterName.TOWER)
+            return;
+
         // Animator 변경
         switch (monsterState)
         {
@@ -101,10 +105,12 @@ public class Monster : MonoBehaviour
             return;
         }
         
-       AnimationSetting(MonsterState.HIT);
+        if(monsterName != MonsterName.TOWER)
+            AnimationSetting(MonsterState.HIT);
         float temp = ((float)monsterCurHp / (float)monsterMaxHP);
         hpFillImageTrans.localScale = new Vector3(temp, imageScale.y);
     }
+    
 
     protected void setting()
     {

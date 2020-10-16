@@ -45,8 +45,8 @@ public class FloatingTextEffect : MonoBehaviour
     {
         while (textMesh.fontSize > 0)
         {
-            transform.localPosition = new Vector2(transform.localPosition.x, transform.localPosition.y + Time.deltaTime );
-            initSize -= Time.deltaTime * 10f;
+            transform.localPosition = new Vector2(transform.localPosition.x, transform.localPosition.y + Time.deltaTime * 1.3f );
+            initSize -= Time.deltaTime * 13f;
 
             if (initSize < 0f)
                 textMesh.fontSize = 0;

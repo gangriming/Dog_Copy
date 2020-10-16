@@ -6,11 +6,12 @@ public class BombInfo : MonoBehaviour
 {
     Animator animator;
     int state;
-
+    AudioSource hitAudio;
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        hitAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -63,17 +64,19 @@ public class BombInfo : MonoBehaviour
     && hit.gameObject.tag == "EnemyMonster")     // 내가 적을 맞췄을 때
             {
                 hit.GetComponentInParent<Monster>().SetHp(25);
-                SummonMgr.instance.Make_FloatingTextOnHead(25.ToString(), new Vector2(hit.transform.localPosition.x, hit.transform.localPosition.y + 0.6f), false);
+                //SummonMgr.instance.Make_FloatingTextOnHead(25.ToString(), new Vector2(hit.transform.position.x, hit.transform.position.y + 0.6f), false);
 
             }
             else if (gameObject.tag == "EnemyMissile"
     && hit.gameObject.tag == "SummonMonster")   // 적이 나를 맞췄을 때 
             {
                 hit.GetComponentInParent<Monster>().SetHp(25);
-                SummonMgr.instance.Make_FloatingTextOnHead(25.ToString(), new Vector2(hit.transform.localPosition.x, hit.transform.localPosition.y + 0.6f), true);
+               // SummonMgr.instance.Make_FloatingTextOnHead(25.ToString(), new Vector2(hit.transform.position.x, hit.transform.position.y + 0.6f), true);
             }
         }
 
+        hitAudio.volume = UIMgr.instance.Get_Volume();
+        hitAudio.Play();
     }
 
     private void OnDrawGizmos()

@@ -247,6 +247,7 @@ MonoBehaviour:
   speed: 1
   monsterMaxHP: 50
   hpFillImageTrans: {fileID: 1846289227325843167}
+  hitSound: {fileID: 8300000, guid: f0050b9df97067a488b4eb1877387bc7, type: 3}
 --- !u!114 &6628847097407595457
 MonoBehaviour:
   m_ObjectHideFlags: 0

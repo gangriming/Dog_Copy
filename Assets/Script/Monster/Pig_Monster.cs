@@ -8,11 +8,14 @@ public class Pig_Monster : Monster
     public Transform enemyAttackPos;
     public Vector2 boxSize;
 
+    AudioSource hitAudio;
+
     private void Start()
     {
         base.setting();     // 기존 awake를 옮김.
 
         monsterName = MonsterName.PIG;
+        hitAudio = GetComponent<AudioSource>();
     }
 
 
@@ -52,6 +55,8 @@ public class Pig_Monster : Monster
                          && GetComponent<SpriteRenderer>().sprite.name == "Attack (34x28)_3")      // 특정 프레임에 공격 다른 방법이 있을까?
                     {
                         attTime = 0.6f;
+                        hitAudio.volume = UIMgr.instance.Get_Volume();
+                        hitAudio.Play();
 
                         Collider2D[] collider2Ds;
                         if (IsPlayerSummon)
@@ -65,15 +70,14 @@ public class Pig_Monster : Monster
                             {
                                 Debug.Log("내 근접 몹이 상대를 공격");
                                 item.gameObject.GetComponent<Monster>().SetHp(10);
-                                SummonMgr.instance.Make_FloatingTextOnHead(10.ToString(), new Vector2(item.transform.localPosition.x, item.transform.localPosition.y + 0.6f), false);
-
+                               // SummonMgr.instance.Make_FloatingTextOnHead(10.ToString(), new Vector2(item.transform.position.x, item.transform.position.y + 0.6f), false);
                             }
                             else if (tag == "EnemyMonster" && item.gameObject.tag == "SummonMonster")
                             {
                                 Debug.Log("적 근접 몹이 나를 공격");
-                                SetHp(10);
-                                SummonMgr.instance.Make_FloatingTextOnHead(10.ToString(), new Vector2(transform.localPosition.x - 0.2f, transform.localPosition.y + 0.6f), true);
-
+                                item.gameObject.GetComponent<Monster>().SetHp(10);
+                                //  SummonMgr.instance.Make_FloatingTextOnHead(10.ToString(), new Vector2(transform.position.x - 0.2f, transform.position.y + 0.6f), true);
+                                //hitAudio.Play();
                             }
                         }
                     }

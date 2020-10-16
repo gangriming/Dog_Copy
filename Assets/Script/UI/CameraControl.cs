@@ -33,6 +33,9 @@ public class CameraControl : MonoBehaviour
         // zoom의 경우
         if(Input.touchCount ==2)
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
+
             //  mainCam.orthographicSize
             Touch touchZero = Input.GetTouch(0);        // 첫번째 좌표
             Touch touchOne = Input.GetTouch(1);         // 두번째 좌표
@@ -58,6 +61,8 @@ public class CameraControl : MonoBehaviour
         }
         else if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved)   // 하나의 손가락으로 움직이는 상태일 때
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
             Vector3 touchPos = Input.GetTouch(0).deltaPosition;/* mainCam.ScreenToWorldPoint(Input.touches[0].position);*/
             transform.Translate(-touchPos.x * moveSpeed * Time.deltaTime, -touchPos.y * moveSpeed * Time.deltaTime, 0);
             mainCam.fieldOfView += Time.deltaTime;
