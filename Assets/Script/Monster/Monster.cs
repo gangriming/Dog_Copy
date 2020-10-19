@@ -92,8 +92,8 @@ public class Monster : MonoBehaviour
     public void SetHp(int damage)
     {
         monsterCurHp -= damage;
-
         Vector3 imageScale = hpFillImageTrans.localScale;
+
         if (monsterCurHp <= 0)
         {
             AnimationSetting(MonsterState.DEAD);
@@ -107,6 +107,7 @@ public class Monster : MonoBehaviour
         
         if(monsterName != MonsterName.TOWER)
             AnimationSetting(MonsterState.HIT);
+
         float temp = ((float)monsterCurHp / (float)monsterMaxHP);
         hpFillImageTrans.localScale = new Vector3(temp, imageScale.y);
     }

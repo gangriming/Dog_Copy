@@ -5,6 +5,18 @@ using UnityEngine;
 public class Tower_Monster : Monster
 {
     public int towerIndex;
+    public bool isAttach = false;       // 처음에는 attach상태가 아님.
+
+    public void Tower_Attach(int index)
+    {
+        isAttach = true;
+        if(!spriteRenderer)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+        spriteRenderer.color = Color.white;
+        towerIndex = index;
+    }
+
     private void Start()
     {
         monsterName = MonsterName.TOWER;

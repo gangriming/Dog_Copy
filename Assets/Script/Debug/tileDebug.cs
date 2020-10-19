@@ -32,12 +32,12 @@ public class tileDebug : MonoBehaviour
 
             Debug.Log(cellPos);
 
-            // 그짝으로 타워 생성
-            if (-3f >= cellPos.y - Mathf.Epsilon && -3f <= cellPos.y + Mathf.Epsilon)
-            {
-                Vector2 towerCol = tempTower.GetComponent<BoxCollider2D>().size;
-                SummonMgr.instance.debugSummonlistAdd(Instantiate(tempTower, new Vector3(cellPos.x + towerCol.x / 2f, cellPos.y + towerCol.y), Quaternion.identity));
-            }
+            //// 그짝으로 타워 생성
+            //if (-3f >= cellPos.y - Mathf.Epsilon && -3f <= cellPos.y + Mathf.Epsilon)
+            //{
+            //    Vector2 towerCol = tempTower.GetComponent<BoxCollider2D>().size;
+            //    SummonMgr.instance.debugSummonlistAdd(Instantiate(tempTower, new Vector3(cellPos.x + towerCol.x / 2f, cellPos.y + towerCol.y), Quaternion.identity));
+            //}
         }
     }
    

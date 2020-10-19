@@ -22,6 +22,7 @@ public class UIMgr : MonoBehaviour
     public GameObject pauseButton;
     public GameObject endGroup;
     public GameObject startGroup;
+    public GameObject towerGroup;
 
     public AudioClip winAudio;
     public AudioClip loseAudio;
@@ -136,7 +137,7 @@ public class UIMgr : MonoBehaviour
 
     private void Update()
     {
-        if(startGroup.activeSelf)
+        if (startGroup.activeSelf)
         {
             if (startGroup.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
@@ -200,7 +201,7 @@ public class UIMgr : MonoBehaviour
 
     public void activeMenu()
     {
-        if(!menuGroup.activeSelf)       // 메뉴가 꺼져있는 상태면
+        if (!menuGroup.activeSelf)       // 메뉴가 꺼져있는 상태면
         {
             Time.timeScale = 0.15f;      // 시간을 느리게
             menuGroup.SetActive(true);      // 메뉴 활성화.
@@ -208,7 +209,7 @@ public class UIMgr : MonoBehaviour
 
             for (int i = 0; i < unitCreateGroup.transform.childCount; ++i)
             {
-                if(unitCreateGroup.transform.GetChild(i).gameObject.activeSelf)
+                if (unitCreateGroup.transform.GetChild(i).gameObject.activeSelf)
                 {
                     unitCreateGroup.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = false;
                 }
@@ -219,8 +220,8 @@ public class UIMgr : MonoBehaviour
     public void menuExit()
     {
         Time.timeScale = 1f;
-        menuGroup.SetActive(false);  
-        pauseButton.GetComponent<Button>().interactable = true; 
+        menuGroup.SetActive(false);
+        pauseButton.GetComponent<Button>().interactable = true;
         for (int i = 0; i < unitCreateGroup.transform.childCount; ++i)
         {
             if (unitCreateGroup.transform.GetChild(i).gameObject.activeSelf)
@@ -248,5 +249,34 @@ public class UIMgr : MonoBehaviour
             bgmAudio.loop = false;
             bgmAudio.Play();
         }
+    }
+
+    public void TowerActive()
+    {
+        if (!towerGroup.activeSelf)
+        {
+            towerGroup.SetActive(true);
+            for (int i = 0; i < unitCreateGroup.transform.childCount - 1; ++i)
+            {
+                if (unitCreateGroup.transform.GetChild(i).gameObject.activeSelf)
+                {
+                    unitCreateGroup.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = false;
+                }
+            }
+
+        }
+    }
+    public void TowerBuild()
+    {
+        // 이때 다시 눌러주면 타워의 위치가 확정이 된다.
+        towerGroup.SetActive(false);
+        for (int i = 0; i < unitCreateGroup.transform.childCount - 1; ++i)
+        {
+            if (unitCreateGroup.transform.GetChild(i).gameObject.activeSelf)
+            {
+                unitCreateGroup.transform.GetChild(i).gameObject.GetComponent<Button>().interactable = true;
+            }
+        }
+        SummonMgr.instance.towerBulid();
     }
 }

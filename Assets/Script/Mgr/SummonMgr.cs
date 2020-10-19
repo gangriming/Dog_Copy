@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct Tower
+{
+   public int index;
+   public bool isExist;
+}
+
 
 public class SummonMgr : MonoBehaviour
 {
@@ -16,8 +22,9 @@ public class SummonMgr : MonoBehaviour
     // SummonMgr에서는 소환한 몬스터의 리스트를 가지고 있는다.
     List<GameObject> summonMonsterList = new List<GameObject>();        // 버튼으로 소환한 내 몬스터
     List<GameObject> enemyMonsterList = new List<GameObject>();          // 일정시간마다 나오는 적의 몬스터
-    // 타워 어떻게 관리하지?
-    //List<int>
+    // 타워 어떻게 관리하지? 타워도 summonMonster에 들어가고, index를 따로 가지고있는다.
+    List<Tower> towerIndex = new List<Tower>();
+    GameObject towerSample;
 
     // 간단한 GetterSetter
     public int Get_CurSummonMonster() { return summonMonsterList.Count; }
@@ -159,6 +166,14 @@ public class SummonMgr : MonoBehaviour
     private void Start()
     {
         StartCoroutine("enemySummon");
+
+        for(int i = -8; i < 5; ++i)
+        {
+            Tower temp = new Tower();
+            temp.index = i;
+            temp.isExist = false;
+            towerIndex.Add(temp);
+        }
     }
 
 
@@ -209,7 +224,11 @@ public class SummonMgr : MonoBehaviour
             case MonsterName.TOWER:
                 if (UIMgr.instance.PlayerMoney - 50 >= 0)
                 {
-                    //타워
+                    //타워의 초기 위치를 설정해야 한다.
+                    towerSample = Instantiate(summonMonster[index], new Vector3(-8f, -1.125f), Quaternion.identity);
+                    //summonMonsterList.Add(towerSample);
+                    //UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
+                    UIMgr.instance.TowerActive();
                 }
                 return false;
             default:
@@ -217,6 +236,38 @@ public class SummonMgr : MonoBehaviour
         }
         return false;
     }
+
+    public void towerBulid()
+    {
+        if (towerSample)
+        {
+            towerSample.GetComponent<Tower_Monster>().Tower_Attach((int)towerSample.transform.localPosition.x);
+            summonMonsterList.Add(towerSample);
+            UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
+
+            towerSample = null;
+        }
+    }
+
+    public void towerMove(bool flag)
+    {
+        if (towerSample)
+        {
+            if (!flag)   //왼쪽
+            {
+                if (towerSample.transform.localPosition.x - 1f < -8f)
+                    return;
+                towerSample.transform.localPosition = new Vector3(towerSample.transform.localPosition.x - 1f, towerSample.transform.localPosition.y);
+            }
+            else
+            {
+                if (towerSample.transform.localPosition.x + 1f > 4f)
+                    return;
+                towerSample.transform.localPosition = new Vector3(towerSample.transform.localPosition.x + 1f, towerSample.transform.localPosition.y);
+            }
+        }
+    }
+
 
 
     IEnumerator enemySummon()
@@ -234,5 +285,7 @@ public class SummonMgr : MonoBehaviour
             yield return new WaitForSeconds(enemySummonTime);
         }
     }
+
+    
 
 }
