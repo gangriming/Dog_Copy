@@ -191,7 +191,7 @@ public class SummonMgr : MonoBehaviour
             case MonsterName.PIG:
                 if (UIMgr.instance.PlayerMoney - 10 >= 0)       // 나중에 상수 구조체로 묶어버리기 걍 대충 해놓ㅇ므
                 {   // 맘ㅇ ㅔ안드는데 코드좀 줄이자
-                    var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.25f), Quaternion.identity);
+                    var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.38f), Quaternion.identity);
                     UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 10;
                     summonMonsterList.Add(temp);
 
@@ -221,6 +221,17 @@ public class SummonMgr : MonoBehaviour
                     return true;
                 }
                 return false;
+            case MonsterName.KING_PIG:
+                if (UIMgr.instance.PlayerMoney - 80 >= 0)
+                {
+                    var temp = Instantiate(summonMonster[index], new Vector3(-13f, -1.12f), Quaternion.identity);
+                    UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 80;
+                    summonMonsterList.Add(temp);
+
+                    UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
+                    return true;
+                }
+                return false;
             case MonsterName.TOWER:
                 if (UIMgr.instance.PlayerMoney - 50 >= 0)
                 {
@@ -244,6 +255,7 @@ public class SummonMgr : MonoBehaviour
             towerSample.GetComponent<Tower_Monster>().Tower_Attach((int)towerSample.transform.localPosition.x);
             summonMonsterList.Add(towerSample);
             UIMgr.instance.Set_CursummonCountUI(summonMonsterList.Count);
+            UIMgr.instance.PlayerMoney = UIMgr.instance.PlayerMoney - 50;
 
             towerSample = null;
         }

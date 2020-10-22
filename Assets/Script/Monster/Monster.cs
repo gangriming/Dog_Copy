@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum MonsterState { IDLE, RUN, ATT, HIT, DEAD };
-public enum MonsterName { PIG, BOX_PIG, BOMB_PIG, TOWER, KING_PIG, HUMAN };
+public enum MonsterName { PIG, BOX_PIG, BOMB_PIG, KING_PIG, TOWER, HUMAN };
 
 public class Monster : MonoBehaviour
 {
