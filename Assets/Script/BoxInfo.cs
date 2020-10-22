@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class BoxInfo : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class BoxInfo : MonoBehaviour
         float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
         transform.eulerAngles = new Vector3(0f, 0f, angle);
     }
+    
 
 
     private void OnTriggerEnter2D(Collider2D collision)     // Trigger로 처리해야, 몬스터가 밀리지않음.

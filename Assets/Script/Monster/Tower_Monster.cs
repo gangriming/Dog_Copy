@@ -15,6 +15,10 @@ public class Tower_Monster : Monster
 
         spriteRenderer.color = Color.white;
         towerIndex = index;
+
+        // 태그 달아서 인식하게
+        gameObject.tag = "SummonMonster";
+        gameObject.layer = 8;
     }
 
     private void Start()

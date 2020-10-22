@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 
 public class CameraControl : MonoBehaviour
 {
+
     int screenHeight;
     int screenWidth;
     Vector3 preCamPos;
@@ -16,7 +17,7 @@ public class CameraControl : MonoBehaviour
 
     public float moveSpeed = 0.5f;
     public float zoomSpeed = 0.2f;
-        
+    
     void Start()
     {
         screenHeight = Screen.height;
@@ -25,6 +26,21 @@ public class CameraControl : MonoBehaviour
         preCamPos = transform.position;
         cineCam = GetComponent<CinemachineVirtualCamera>();
         mainCam = Camera.main;
+    }
+    
+    public IEnumerator Shake(float _amount, float _duration)
+    {
+        float timer = 0;
+        Vector2 originPos = transform.localPosition;
+        while (timer <= _duration)
+        {
+            transform.localPosition = Random.insideUnitCircle * _amount + originPos;
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, -52f);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        transform.localPosition = originPos;
     }
 
     // Update is called once per frame
@@ -66,7 +82,6 @@ public class CameraControl : MonoBehaviour
             Vector3 touchPos = Input.GetTouch(0).deltaPosition;/* mainCam.ScreenToWorldPoint(Input.touches[0].position);*/
             transform.Translate(-touchPos.x * moveSpeed * Time.deltaTime, -touchPos.y * moveSpeed * Time.deltaTime, 0);
             mainCam.fieldOfView += Time.deltaTime;
-
         }
     }
 }

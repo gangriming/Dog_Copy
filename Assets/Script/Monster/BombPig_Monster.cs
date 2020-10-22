@@ -21,10 +21,20 @@ public class BombPig_Monster : Monster
             if (!targetMonster)
                 AnimationSetting(MonsterState.RUN);     // 타겟된게 없으면 RUN
         }
+        else if (monsterState == MonsterState.DEAD)
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)    // 죽는 모션 끝나면
+            {
+            }
+            else
+                Destroy(gameObject);        // 나중에 오브젝트 풀 연동해서 setactive바꾸기
+        }
     }
 
     private void FixedUpdate()
     {
+        if (onceDead)
+            return;
         attTime -= Time.deltaTime;
         
         switch (monsterState)

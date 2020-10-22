@@ -11,6 +11,7 @@ public class Monster : MonoBehaviour
     public float speed = 1.0f;
     public int monsterMaxHP = 50;
     public Transform hpFillImageTrans;
+    public ParticleSystem bloodParticle;
     protected AudioSource hitSound;
 
     // -읽을 수 있는 변수들-
@@ -31,6 +32,12 @@ public class Monster : MonoBehaviour
                 spriteRenderer.flipX = false;
                 spriteRenderer.color = new Color(1f, 0.3977f, 0.3977f);
                 hpFillImageTrans.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                if (bloodParticle)
+                {
+                    bloodParticle.transform.rotation = Quaternion.Euler(-20f, 90f, -90f);
+                    bloodParticle.transform.localPosition = new Vector3(bloodParticle.transform.localPosition.x + 0.5f, bloodParticle.transform.localPosition.y, bloodParticle.transform.localPosition.z);
+                    bloodParticle.startColor = Color.red;
+                }
             }
         }
     }
@@ -58,13 +65,19 @@ public class Monster : MonoBehaviour
     public void SetState(MonsterState state) { monsterState = state; }  // 임시
 
     protected Transform targetMonster;
+    protected bool onceDead = false;
 
     protected void AnimationSetting(MonsterState state)
     {
         monsterState = state;
 
         if (monsterName == MonsterName.TOWER)
+        {
+            if (monsterState == MonsterState.HIT)
+                if (bloodParticle)
+                    bloodParticle.Play();
             return;
+        }
 
         // Animator 변경
         switch (monsterState)
@@ -83,14 +96,21 @@ public class Monster : MonoBehaviour
                 break;
             case MonsterState.HIT:
                 animator.SetTrigger("isHit");
+                if (bloodParticle)
+                    bloodParticle.Play();
                 break;
             case MonsterState.DEAD:
+                animator.SetTrigger("isDead");
+                GetComponent<Rigidbody2D>().Sleep();
                 break;
         }
     }
 
     public void SetHp(int damage)
     {
+        if (onceDead)
+            return;
+
         monsterCurHp -= damage;
         Vector3 imageScale = hpFillImageTrans.localScale;
 
@@ -100,18 +120,22 @@ public class Monster : MonoBehaviour
             hpFillImageTrans.localScale = new Vector3(0f, imageScale.y);
 
             summonMgr.monsterDead(isPlayerSummon);
-            // 일단 죽여놓자
-            Destroy(gameObject);        // 나중에 오브젝트 풀 연동해서 setactive바꾸기
+
+            if (monsterName == MonsterName.TOWER)
+                Destroy(gameObject);
+
+            onceDead = true;
+
             return;
         }
-        
-        if(monsterName != MonsterName.TOWER)
-            AnimationSetting(MonsterState.HIT);
+
+
+        AnimationSetting(MonsterState.HIT);
 
         float temp = ((float)monsterCurHp / (float)monsterMaxHP);
         hpFillImageTrans.localScale = new Vector3(temp, imageScale.y);
     }
-    
+
 
     protected void setting()
     {

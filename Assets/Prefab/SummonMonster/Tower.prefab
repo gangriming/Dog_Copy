@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 5144013860363620497}
   - component: {fileID: 7407866054384782094}
   - component: {fileID: 2385453050896316583}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Tower
-  m_TagString: SummonMonster
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33,6 +33,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1826989778007467355}
+  - {fileID: 7536073814706471944}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -147,7 +148,9 @@ MonoBehaviour:
   speed: 1
   monsterMaxHP: 200
   hpFillImageTrans: {fileID: 5254993664409327435}
+  bloodParticle: {fileID: 7536073814706471947}
   towerIndex: 0
+  isAttach: 0
 --- !u!82 &2385453050896316583
 AudioSource:
   m_ObjectHideFlags: 0
@@ -436,3 +439,99 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &926669937377114782
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5144013860363620498}
+    m_Modifications:
+    - target: {fileID: 7226503138588933778, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_Name
+      value: MonsterBlood
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.795
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.6601562
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.70093465
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.093222134
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.09322196
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.700935
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -105.15099
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 89.99999
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933781, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933781, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7226503138588933781, guid: 385c091e2f1ed304499bf19161566b38,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 385c091e2f1ed304499bf19161566b38, type: 3}
+--- !u!4 &7536073814706471944 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7226503138588933782, guid: 385c091e2f1ed304499bf19161566b38,
+    type: 3}
+  m_PrefabInstance: {fileID: 926669937377114782}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &7536073814706471947 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7226503138588933781, guid: 385c091e2f1ed304499bf19161566b38,
+    type: 3}
+  m_PrefabInstance: {fileID: 926669937377114782}
+  m_PrefabAsset: {fileID: 0}

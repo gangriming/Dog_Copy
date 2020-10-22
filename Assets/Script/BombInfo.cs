@@ -21,13 +21,6 @@ public class BombInfo : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        if (state == 0)
-        {
-            // 돌리지말자
-            //Vector2 velocity = GetComponent<Rigidbody2D>().velocity;
-            //float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-            //transform.eulerAngles = new Vector3(0f, 0f, angle);
-        }
 
     }
 
